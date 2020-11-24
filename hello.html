@@ -1,0 +1,113 @@
+<template>
+  <div class="frame">
+      <div class="center">
+          <div class="title">
+              <p><font size=6 style="font-weight: bold">UPLOAD YOUR FILE</font></p>
+              <font size=2>Any resolution, it's fine</font>
+          </div>
+
+          <div class="dropzone">
+              <img src="http://100dayscss.com/codepen/upload.svg" class="upload-icon" />
+              <p><font size=4>DRAG FILES HERE</font></p>
+              <p><font size=2>or</font></p>
+              <p><font size=2><a href="">{{ fileName}}</a></font></p>
+              <input type="file" id="file" ref="file" v-on:change="handleFileUpload()" class="upload-input"/>
+          </div>
+          <button class="btn" name="uploadbutton" v-on:click="submitFile()">Upload file</button>
+          
+      </div>
+  </div>
+</template>
+
+<script>
+import Result from './Result.vue'
+export default {
+  name: 'app',
+  data() {
+      return {
+          image: '',
+          fileName: 'Browse File',
+          tags: {}
+      }
+  },
+  methods: {
+    submitFile(){
+        /*
+                Initialize the form data
+            */
+            let formData = new FormData();
+
+            /*
+                Add the form data we need to submit
+            */
+            formData.append('image', this.file);
+
+        /*
+          Make the request to the POST /single-file URL
+        */
+            this.$axios.post( 'http://192.168.0.32:8000/api/upload_image/',
+                formData,
+                {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+              }
+            ).then(function(){
+          console.log('SUCCESS!!');
+        })
+        .catch(function(){
+          console.log('FAILURE!!');
+        });
+      },
+
+      /*
+        Handles a change on the file upload
+      */
+      handleFileUpload(){
+        this.file = this.$refs.file.files[0];
+      },
+      onImageChange(e) {
+          let files = e.target.files || e.dataTransfer.files;
+          this.createImage(files[0]);
+      },
+
+      createImage(file) {
+          let reader = new FileReader();
+          let vm = this;
+          // console.log(file)
+          reader.onload = (e) => {
+              vm.image = e.target.result;
+              this.image = e.target.result
+          };
+
+          this.fileName = file.name
+          reader.readAsDataURL(file);
+      },
+
+      uploadImage(){
+          let formData = new FormData();
+          formData.append('image', this.image);
+
+          this.$axios.post('http://localhost:5000/',formData, {
+              headers: {
+                  'Content-Type': 'multipart/form-data'
+              }
+          }).then(response => {
+              console.log(response.data)
+              if (response.data.success) {
+                  alert(response.data.success);
+              }
+              this.tags = response.data
+              this.saveStorage(this.tags)
+              // window.location.replace("localhost:8000/#/result");
+
+          });
+      },
+      saveStorage (data) {
+          localStorage.tags = JSON.stringify(data)
+      }
+  }
+}
+</script>
+
+<style src="./screen1.css" scoped></style>
