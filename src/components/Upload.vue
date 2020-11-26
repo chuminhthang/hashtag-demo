@@ -2,12 +2,17 @@
   <div class="frame">
     <div class="center">
       <div id="header">
-        <div id="sub-left">
+        <div id="sub-left" :style="{'color': uploadSeen ? 'black' : '#bf9d9d'}">
           <font size="2" style="font-weight: bold">UPLOAD IMAGE </font><br />
           <font size="1">Any solution, It's free </font>
         </div>
-        <div id="sub-middle"></div>
-        <div id="sub-right">
+        <!-- <div id="sub-middle">
+            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-circle" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                <path fill-rule="evenodd" d="M4 8a.5.5 0 0 0 .5.5h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H4.5A.5.5 0 0 0 4 8z"/>
+            </svg>
+        </div> -->
+        <div id="sub-right" :style="{'color': uploadSeen ? '#bf9d9d' : 'black'}">
           <font size="2" style="font-weight: bold">SEE RESULT </font><br />
           <font size="1">See all item detected </font>
         </div>
@@ -22,10 +27,7 @@
 
       <div class="dropzone" v-if="uploadSeen">
           <span v-if="dropZoneSeen">
-          <img
-            src="http://100dayscss.com/codepen/upload.svg"
-            class="upload-icon"
-          />
+          <img src="http://100dayscss.com/codepen/upload.svg" class="upload-icon"/>
           <p><font size="4">DRAG FILES HERE</font></p>
           <p><font size="2">or</font></p>
           <p>
@@ -45,7 +47,7 @@
       <div v-if="resultSeen" class="result">
           <div id="main-left">
           <div class="img__wrap">
-                <img src="./1.jpg" class="img__img" id="img-cell">
+                <img :src="originImage" class="img__img" id="img-cell">
                 <p class="img__description rounded">
                 <svg color="white" width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-upload" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                     <path fill-rule="evenodd" d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
@@ -57,27 +59,32 @@
         </div>
         <div id="main-middle"></div>
         <div id="main-right">
-            <p>
+            <div v-if="resultTagsSeen">
+            <p id="showResult">
                 <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-tags" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                     <path fill-rule="evenodd" d="M3 2v4.586l7 7L14.586 9l-7-7H3zM2 2a1 1 0 0 1 1-1h4.586a1 1 0 0 1 .707.293l7 7a1 1 0 0 1 0 1.414l-4.586 4.586a1 1 0 0 1-1.414 0l-7-7A1 1 0 0 1 2 6.586V2z"/>
                     <path fill-rule="evenodd" d="M5.5 5a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1zm0 1a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"/>
                     <path d="M1 7.086a1 1 0 0 0 .293.707L8.75 15.25l-.043.043a1 1 0 0 1-1.414 0l-7-7A1 1 0 0 1 0 7.586V3a1 1 0 0 1 1-1v5.086z"/>
                 </svg>
-                <font size="3">Item detected</font>
+                <font size="3" style="font-weight: bold">Item detected</font>
             </p>
             <nav >
-                <button type="button" class="btn btn-light" style="border-color: #dcdddf"> AAA </button>
-                <button type="button" class="btn btn-light" style="border-color: #dcdddf"> BBB </button>
+                <button v-for="tag in tags" type="button" class="rounded btn-light" style="border-color: #dcdddf"> {{ tag }} </button>
             </nav>
+            </div>
+            <div v-if="resultLoaderSeen" class="loaderInfo">
+                <p class="loader"></p>
+                <p id="p3">
+                    <font size="2">Please wait. It's about several seconds</font>
+                </p>
+            </div>
         </div>
       </div>
 
 
       <div v-if="errorSeen">
         <p id="p3">
-          <font size="2" color="red"
-            >Your file is invalid format. Please re-upload</font
-          >
+            <font size="2" color="red">Your file is invalid format. Please re-upload</font>
         </p>
       </div>
     </div>
@@ -89,6 +96,7 @@ import Result from "./Result.vue";
 
 // const IMAGE_PROCESSING_API = 'http://192.168.0.32:8000/api/upload_image/'
 const IMAGE_PROCESSING_API = "http://192.168.0.32:5000/search";
+const IMAGE_PROCESSING_URL = "http://192.168.0.32:5000"
 // const IMAGE_PROCESSING_API = 'http://localhost:5000/'
 
 export default {
@@ -103,6 +111,8 @@ export default {
       loaderSeen: false,
       errorSeen: false,
       resultSeen: false,
+      resultLoaderSeen: false,
+      resultTagsSeen: true,
       title: "UPLOAD YOUR IMAGE",
       subTitle: "Any resolution, it\'s fine"
     };
@@ -129,15 +139,27 @@ export default {
             alert(response.data.success);
           }
 
-          this.tags = response.data;
-          this.saveStorage(this.tags);
-          this.uploadSeen = false
-          this.resultSeen = true
-          this.title = "See Result"
-          this.subTitle = "_______________"
-        //   let routeData = this.$router.resolve({ name: "Result" });
-        //   window.open(routeData.href, "_blank");
-        //   this.$router.go();
+          this.saveStorage(response.data);
+
+          this.tags = Object.keys(response.data['data'])
+          this.tags.splice(0, 1)
+
+          // this.originImage = IMAGE_PROCESSING_URL + response.data['data']['image']
+
+          if (this.resultSeen) {
+            this.resultTagsSeen = true
+            this.resultLoaderSeen = false
+
+            console.log(this.originImage)
+            this.originImage = URL.createObjectURL(this.file)
+            console.log(this.originImage)
+          } else {
+            this.uploadSeen = false
+            this.resultSeen = true
+            this.loaderSeen = false
+            this.title = "See Result"
+            this.subTitle = "__________________"
+          }
         });
     },
 
@@ -157,10 +179,19 @@ export default {
       console.log(isValid);
 
       if (isValid) {
-        this.dropZoneSeen = false;
-        this.loaderSeen = true;
-        this.errorSeen = false;
-        this.submitFile();
+        this.originImage = URL.createObjectURL(this.file)
+        if (this.resultSeen) {
+            this.dropZoneSeen = false;
+            this.resultLoaderSeen = true;
+            this.resultTagsSeen = false;
+            this.errorSeen = false;
+            this.submitFile();
+        } else {
+            this.dropZoneSeen = false;
+            this.loaderSeen = true;
+            this.errorSeen = false;
+            this.submitFile();
+        }
       } else {
         this.errorSeen = true;
       }

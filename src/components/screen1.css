@@ -70,6 +70,7 @@ h1 {
 	border-radius: 9px;
 	text-align: center;
 	background-color: whitesmoke;
+	margin-top:50px;
 }
 
 
@@ -88,7 +89,6 @@ h1 {
 
 
 .btn {
-	width: 140px;
 	height: 40px;
 	background: darkmagenta;
 	color: #fff;
@@ -136,12 +136,12 @@ form {
 }
 
 #sub-left {
-	width: 48%;
+	width: 50%;
 	height: 100%;
 	float: left;
 	text-align: center;
 	vertical-align: middle;
-	
+	border-right: 1px dashed rgb(117, 110, 110)
 }
 
 #sub-middle {
@@ -151,7 +151,7 @@ form {
 }
 
 #sub-right {
-	width: 48%;
+	width: 49%;
 	height: 100%;
 	float: right;
 	text-align: center;
@@ -183,7 +183,7 @@ form {
     border-radius: 10px;
 }
 
-#main-right p {
+#main-right #showResult {
 	text-align: left;
 	margin-left: 10px;
 }
@@ -194,9 +194,8 @@ form {
 }
 
 #main-right nav button {
-	flex: 0 0 18%;
+	flex: 0 0 %;
 	height: 50px;
-	width: 200px;
 	text-align: center;
 	margin: 10px;
 }
@@ -206,6 +205,7 @@ form {
 	height: 50%;
 	border-radius: 9px;
 	text-align: center;
+	margin-top:50px;
 }
 
 
