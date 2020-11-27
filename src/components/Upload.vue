@@ -139,9 +139,10 @@ export default {
           this.saveStorage(response.data);
 
           this.tags = Object.keys(response.data['data'])
-          this.tags.splice(0, 1)
-
-          // this.originImage = IMAGE_PROCESSING_URL + response.data['data']['image']
+          var index = this.tags.indexOf('image');
+          if (index !== 'image') {
+            this.tags.splice(index, 1);
+          }
 
           if (this.resultSeen) {
             this.resultTagsSeen = true
